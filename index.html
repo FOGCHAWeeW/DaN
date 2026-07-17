@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vergen — бренд одежды</title>
+    <!-- Шрифты: Inter + Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        milk: '#F8F6F2',
+                        charcoal: '#2D2D2D',
+                        navy: '#1B365D',
+                        sand: '#EAE6DF',
+                        beige: '#F1EDE4'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F8F6F2; }
+        ::-webkit-scrollbar-thumb { background: #EAE6DF; border-radius: 3px; }
+        
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== ЗАСТАВКА (INTRO) ===== */
+        #intro-screen {
+            background-color: #F8F6F2;
+            transition: opacity 1s cubic-bezier(0.77, 0, 0.175, 1), visibility 1s;
+        }
+
+        /* Эффект мигающего курсора печатной машинки */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #2D2D2D; }
+        }
+        .animate-blink {
+            animation: blink-caret 0.75s step-end infinite;
+        }
+    </style>
+</head>
+<body class="bg-milk text-charcoal font-sans antialiased overflow-x-hidden">
+
+    <!-- ЗАСТАВКА (INTRO) -->
+    <div id="intro-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-milk select-none">
+        <div id="logo-wrap" class="font-serif text-5xl md:text-7xl tracking-[0.2em] text-charcoal font-light border-r-2 border-charcoal/85 pr-2 animate-blink whitespace-nowrap overflow-hidden flex items-center" style="height: 1.2em; min-width: 1px;"></div>
+    </div>
+
+    <!-- НАВИГАЦИЯ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-milk/80 backdrop-blur-md border-b border-sand/30 py-5 px-6 md:px-12 flex justify-between items-center">
+        <div class="font-serif text-xl tracking-[0.2em] text-charcoal font-medium">
+            <a href="#">VERGEN</a>
+        </div>
+        <nav class="hidden md:flex space-x-10 text-[11px] tracking-[0.15em] uppercase font-light text-charcoal/70">
+            <a href="#about" class="hover:text-navy transition-colors">Летописи</a>
+            <a href="#pants-preview" class="hover:text-navy transition-colors">Брюки</a>
+            <a href="#catalog" class="hover:text-navy transition-colors">Коллекция</a>
+        </nav>
+        <div class="flex items-center space-x-5 text-[11px] tracking-[0.15em] uppercase font-light">
+            <a href="#catalog" class="hover:text-navy transition-colors">Каталог</a>
+            
+            <button onclick="toggleCartDrawer()" class="relative hover:text-navy transition-colors">
+                Корзина (<span id="cart-count">0</span>)
+            </button>
+            
+            <!-- КНОПКА ЛИЧНОГО КАБИНЕТА -->
+            <button onclick="handleProfileClick()" class="hover:text-navy transition-colors flex items-center space-x-1.5" title="Личный кабинет">
+                <i class="fa-regular fa-user text-sm"></i>
+                <span class="hidden sm:inline" id="profile-btn-text">Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ПЕРВЫЙ ЭКРАН (HERO) -->
+    <section class="relative w-full h-screen bg-cover bg-center flex items-end pb-20 px-6 md:px-16" style="background-image: linear-gradient(rgba(248, 246, 242, 0.1), rgba(248, 246, 242, 0.5)), url('mainImage.jpg');">
+        <div class="max-w-xl bg-milk/50 backdrop-blur-sm p-8 rounded-lg border border-white/20">
+            <p class="font-serif italic text-2xl md:text-3xl text-charcoal/90 mb-4 leading-relaxed">
+                «Vergen»
+            </p>
+            <h1 class="font-serif text-4xl md:text-5xl font-light tracking-wide text-navy mb-6">
+                Искусство выглядеть расслабленно.
+            </h1>
+            <p class="text-charcoal/70 font-light text-base md:text-lg leading-relaxed mb-8">
+                Вам не нужен повод, чтобы надеть лучшее. Наша летняя капсула создана для неспешных прогулок у моря и тихих утренних ритуалов.
+            </p>
+            <a href="#catalog" class="inline-block border border-charcoal text-charcoal uppercase tracking-[0.2em] text-[11px] px-8 py-4 hover:bg-charcoal hover:text-milk transition-all duration-500">
+                Исследовать коллекцию
+            </a>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ-МАНИФЕСТ -->
+    <section id="about" class="py-24 px-6 md:px-16 max-w-3xl mx-auto text-center fade-in-section">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 block mb-6">— НАША ЭСТЕТИКА</span>
+        <h2 class="font-serif text-3xl md:text-5xl font-light text-navy leading-snug mb-8">
+            Это не просто вещи. Это ощущение момента, когда время замедляет свой ход.
+        </h2>
+        <div class="w-12 h-[1px] bg-sand mx-auto mb-8"></div>
+        <p class="text-charcoal/60 font-light text-lg md:text-xl leading-relaxed italic">
+            «Vergen»
+        </p>
+    </section>
+
+    <!-- ВТОРОЙ ЭКРАН — ФОТОСЕССИЯ -->
+    <section id="pants-preview" class="py-16 md:py-24 px-6 md:px-16 bg-beige fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="relative group overflow-hidden bg-[#D3CFC9] h-[500px] md:h-[650px] flex items-center justify-center">
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 filter brightness-95" style="background-image: url('trousersPhotoSessa5.jpg');"></div>
+                <div class="absolute inset-0 bg-charcoal/5"></div>
+                <div class="absolute bottom-8 left-8 right-8 bg-milk/90 backdrop-blur-sm p-6 border border-sand">
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 mb-1">Капсула: В процессе</p>
+                    <p class="font-serif text-lg text-charcoal">Фотосессия коллекции проходит на острове Искья, Италия.</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <p class="font-serif text-sm tracking-[0.15em] text-navy/70 uppercase">Коллекция «Первый свет»</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- КАТАЛОГ -->
+    <section id="catalog" class="py-24 px-6 md:px-16 fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 block mb-4">Летний гардероб</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-light text-charcoal">Капсула «Лето на Вилле»</h2>
+                <div class="w-12 h-[1px] bg-sand mx-auto mt-6"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Товар 1 -->
+                <div class="group cursor-pointer" onclick="openProductPreview('pants1')">
+                    <div class="relative overflow-hidden bg-[#E2DFD9] aspect-[3/4] mb-5">
+                        <img src="tovarTrou2.jpg" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Брюки Лагуна">
+                        <button onclick="event.stopPropagation(); openSizeSelector('pants1')" class="absolute bottom-4 left-4 right-4 bg-milk/95 backdrop-blur-sm py-3 text-[10px] uppercase tracking-[0.15em] text-charcoal opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-navy hover:text-white z-10">
+                            Добавить в корзину
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start font-light text-sm">
+                        <div>
+                            <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брюки</h4>
+                            <p class="text-charcoal/40 text-[11px] mt-1">Лагуна</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Товар 2 -->
+                <div class="group cursor-pointer" onclick="openProductPreview('pants2')">
+                    <div class="relative overflow-hidden bg-[#E2DFD9] aspect-[3/4] mb-5">
+                        <img src="tovarTrou4.jpeg" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Брючки Сучки Пиздатые">
+                        <button onclick="event.stopPropagation(); openSizeSelector('pants2')" class="absolute bottom-4 left-4 right-4 bg-milk/95 backdrop-blur-sm py-3 text-[10px] uppercase tracking-[0.15em] text-charcoal opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-navy hover:text-white z-10">
+                            Добавить в корзину
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start font-light text-sm">
+                        <div>
+                            <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брючки Сучки</h4>
+                            <p class="text-charcoal/40 text-[11px] mt-1">Пиздатые</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Товар 3 -->
+                <div class="group cursor-pointer" onclick="openProductPreview('pants3')">
+                    <div class="relative overflow-hidden bg-[#E2DFD9] aspect-[3/4] mb-5">
+                        <img src="tovarTrou3.jpg" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Брючки Топленое молоко">
+                        <button onclick="event.stopPropagation(); openSizeSelector('pants3')" class="absolute bottom-4 left-4 right-4 bg-milk/95 backdrop-blur-sm py-3 text-[10px] uppercase tracking-[0.15em] text-charcoal opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-navy hover:text-white z-10">
+                            Добавить в корзину
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start font-light text-sm">
+                        <div>
+                            <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брючки</h4>
+                            <p class="text-charcoal/40 text-[11px] mt-1">Топленое молоко</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ФУТЕР -->
+    <footer class="bg-beige border-t border-sand/50 py-16 px-6 md:px-16 text-center md:text-left">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div>
+                <h3 class="font-serif text-2xl tracking-[0.2em] text-navy mb-4">VERGEN</h3>
+                <p class="text-charcoal/50 font-light text-sm leading-relaxed">
+                    Премиальная одежда, вдохновленная средиземноморской культурой.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-serif text-base font-medium text-charcoal mb-4">Навигация</h4>
+                <ul class="space-y-2 text-sm font-light text-charcoal/60">
+                    <li><a href="#about" class="hover:text-navy">Философия</a></li>
+                    <li><a href="#catalog" class="hover:text-navy">Капсула</a></li>
+                    <li><a href="#pants-preview" class="hover:text-navy">Фотосессия</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif text-base font-medium text-charcoal mb-4">Связь</h4>
+                <ul class="space-y-2 text-sm font-light text-charcoal/60">
+                    <li><a href="https://t.me/Teamtasher" target="_blank" class="hover:text-navy"><i class="fa-brands fa-telegram mr-2"></i>Telegram</a></li>
+                    <li><span>support@vergenbrand.com</span></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif text-base font-medium text-charcoal mb-4">Спокойствие</h4>
+                <p class="text-charcoal/50 font-light text-xs leading-relaxed">
+                    Все заказы обрабатываются вручную через Telegram. Только личный подход.
+                </p>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto border-t border-sand/40 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.1em] font-light text-charcoal/40">
+            <p>© 2026 VERGEN</p>
+            <p class="mt-4 md:mt-0">Сделано с любовью к лету</p>
+        </div>
+    </footer>
+
+    <!-- КОРЗИНА -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-milk shadow-2xl border-l border-sand transform translate-x-full transition-transform duration-500 flex flex-col">
+        <div class="p-6 border-b border-sand flex justify-between items-center bg-beige">
+            <h3 class="font-serif text-2xl text-charcoal">Корзина</h3>
+            <button onclick="toggleCartDrawer()" class="text-charcoal/50 hover:text-charcoal text-xl p-2">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto p-6 space-y-6">
+            <p class="text-center text-charcoal/40 font-light italic mt-12 text-sm">Корзина пуста</p>
+        </div>
+        <div class="p-6 border-t border-sand bg-beige space-y-4">
+            <div class="flex justify-between items-center font-serif text-lg text-charcoal">
+                <span>Итого</span>
+                <span id="cart-total" class="font-medium">0 ₽</span>
+            </div>
+            
+            <!-- ФОРМА ОФОРМЛЕНИЯ ЗАКАЗА -->
+            <div id="order-form-container" class="hidden space-y-3">
+                <!-- ID полей в соответствии с ТЗ -->
+                <input type="email" id="order-email" placeholder="Электронная почта или Telegram" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                
+                <!-- Скрытые поля для интеграции с бэкендом (заполняются автоматически) -->
+                <input type="hidden" id="order-item" value="">
+                <input type="hidden" id="order-price" value="">
+                
+                <!-- Кнопка оформления с вызовом функции makeOrder() -->
+                <button type="button" onclick="makeOrder(event)" class="w-full bg-navy text-white text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-charcoal transition-all">Оформить заказ</button>
+            </div>
+            <button id="checkout-btn" onclick="showOrderForm()" class="w-full bg-charcoal text-milk text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-navy transition-all">
+                Оформить заказ
+            </button>
+        </div>
+    </div>
+
+    <div id="cart-overlay" onclick="toggleCartDrawer()" class="fixed inset-0 bg-charcoal/20 backdrop-blur-sm z-40 hidden transition-opacity duration-500 opacity-0"></div>
+
+    <!-- ЛИЧНЫЙ КАБИНЕТ (DRAWER) -->
+    <div id="profile-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-milk shadow-2xl border-l border-sand transform translate-x-full transition-transform duration-500 flex flex-col">
+        <div class="p-6 border-b border-sand flex justify-between items-center bg-beige">
+            <h3 class="font-serif text-2xl text-charcoal">Личный кабинет</h3>
+            <button onclick="toggleProfileDrawer()" class="text-charcoal/50 hover:text-charcoal text-xl p-2">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <!-- Профиль пользователя -->
+        <div class="p-6 border-b border-sand/40 bg-milk/50 flex flex-col justify-between">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-sand/60 flex items-center justify-center text-navy">
+                    <i class="fa-regular fa-user text-lg"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-charcoal/40 font-light uppercase tracking-wider">Вы вошли как</p>
+                    <p id="profile-email" class="text-sm font-medium text-charcoal"></p>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="text-[10px] uppercase tracking-[0.15em] text-red-600 hover:text-red-800 transition-colors flex items-center space-x-1.5 self-start">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Выйти из аккаунта</span>
+            </button>
+        </div>
+
+        <!-- История заказов -->
+        <div class="flex-grow overflow-y-auto p-6">
+            <h4 class="font-serif text-lg text-navy mb-4">История ваших заказов</h4>
+            <div id="profile-orders-list" class="space-y-4">
+                <!-- Заказы рендерятся тут динамически -->
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-overlay" onclick="toggleProfileDrawer()" class="fixed inset-0 bg-charcoal/20 backdrop-blur-sm z-40 hidden transition-opacity duration-500 opacity-0"></div>
+
+    <!-- ОКНО ВХОДА И РЕГИСТРАЦИИ (AUTH MODAL) -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="absolute inset-0 bg-charcoal/30 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+        <div class="bg-milk p-8 max-w-md w-full relative z-10 border border-sand shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-charcoal/40 hover:text-charcoal">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <!-- Вкладки войти/зарегаться -->
+            <div class="flex border-b border-sand mb-6">
+                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-charcoal font-medium text-charcoal">Вход</button>
+                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-transparent text-charcoal/40 hover:text-charcoal transition-colors">Регистрация</button>
+            </div>
+
+            <!-- Форма входа -->
+            <div id="form-login" class="space-y-4">
+                <p class="text-xs text-charcoal/50 font-light mb-2 leading-relaxed" id="auth-prompt-msg">Войдите в личный кабинет, чтобы продолжить.</p>
+                <input type="email" id="login-email" placeholder="Электронная почта" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                <input type="password" id="login-password" placeholder="Пароль" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                <div id="login-error" class="text-xs text-red-600 hidden font-light">Неверный пароль или почта.</div>
+                <button type="button" onclick="handleLoginSubmit(event)" class="w-full bg-navy text-white text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-charcoal transition-all duration-300">Войти</button>
+            </div>
+
+            <!-- Форма регистрации -->
+            <div id="form-register" class="space-y-4 hidden">
+                <p class="text-xs text-charcoal/50 font-light mb-2 leading-relaxed">Создайте аккаунт, чтобы сохранять историю заказов и быстро оформлять покупки.</p>
+                <!-- ID полей в соответствии с ТЗ -->
+                <input type="text" id="reg-name" placeholder="Ваше имя" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                <input type="email" id="reg-email" placeholder="Электронная почта" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                <input type="password" id="reg-pass" placeholder="Придумайте пароль" class="w-full bg-milk border border-sand px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                <div id="register-error" class="text-xs text-red-600 hidden font-light">Пожалуйста, проверьте введённые данные.</div>
+                <!-- Кнопка вызова функции registerUser() -->
+                <button type="button" onclick="registerUser(event)" class="w-full bg-charcoal text-milk text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-navy transition-all duration-300">Зарегистрироваться</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА БЫСТРОГО ПРОСМОТРА ТОВАРА -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="absolute inset-0 bg-charcoal/30 backdrop-blur-sm" onclick="closeProductModal()"></div>
+        <div class="bg-milk max-w-2xl w-full relative z-10 border border-sand flex flex-col md:flex-row overflow-hidden max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-charcoal/40 hover:text-charcoal z-20 bg-milk/80 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <!-- Блок фото -->
+            <div class="w-full md:w-1/2 bg-[#E2DFD9] aspect-[3/4] md:aspect-auto md:h-auto">
+                <img id="modal-product-img" src="" class="w-full h-full object-cover" alt="" loading="lazy">
+            </div>
+            <!-- Блок информации -->
+            <div class="w-full md:w-1/2 p-8 flex flex-col justify-between space-y-6">
+                <div>
+                    <span id="modal-product-tag" class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 block mb-2">Лагуна</span>
+                    <h3 id="modal-product-name" class="font-serif text-3xl text-charcoal mb-4">Брюки</h3>
+                    <p id="modal-product-desc" class="text-charcoal/60 font-light text-sm leading-relaxed">
+                        Мягкая, струящаяся ткань. Идеальная посадка, подчеркивающая силуэт.
+                    </p>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-charcoal/50 text-xs font-light">Цена:</span>
+                        <span id="modal-product-price" class="font-serif text-2xl text-navy">14 500 ₽</span>
+                    </div>
+                    <button id="modal-add-btn" class="w-full bg-charcoal text-milk text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-navy transition-all">
+                        Добавить в корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА БЫСТРОГО ВЫБОРА РАЗМЕРА -->
+    <div id="size-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="absolute inset-0 bg-charcoal/30 backdrop-blur-sm" onclick="closeSizeModal()"></div>
+        <div class="bg-milk p-8 max-w-xs w-full relative z-10 border border-sand text-center">
+            <button onclick="closeSizeModal()" class="absolute top-4 right-4 text-charcoal/40 hover:text-charcoal">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-serif text-xl text-navy mb-1">Выберите размер</h3>
+            <p id="size-product-name" class="text-charcoal/50 font-light text-xs mb-6">Брюки</p>
+            <div class="grid grid-cols-4 gap-2 mb-2">
+                <button onclick="selectSizeAndAdd('S')" class="border border-sand py-3 text-sm hover:border-charcoal hover:bg-beige transition-all font-light">S</button>
+                <button onclick="selectSizeAndAdd('M')" class="border border-sand py-3 text-sm hover:border-charcoal hover:bg-beige transition-all font-light">M</button>
+                <button onclick="selectSizeAndAdd('L')" class="border border-sand py-3 text-sm hover:border-charcoal hover:bg-beige transition-all font-light">L</button>
+                <button onclick="selectSizeAndAdd('XL')" class="border border-sand py-3 text-sm hover:border-charcoal hover:bg-beige transition-all font-light">XL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ (TOAST) -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[100] bg-charcoal text-milk px-6 py-4 rounded-none shadow-2xl border border-sand/20 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span class="text-xs uppercase tracking-[0.15em] font-light" id="toast-message">Товар добавлен в корзину</span>
+    </div>
+
+    <!-- JS -->
+    <!-- JS -->
+    <script>
+        const TELEGRAM_USERNAME = "Teamtasher";
+        const SERVER_URL = 'http://127.0.0.1:5000';
+
+        // База данных товаров
+        const products = {
+            'pants1': {
+                name: 'Брюки',
+                price: 14500,
+                img: 'tovarTrou2.jpg',
+                tag: 'Лагуна',
+                desc: 'Свободный крой и премиальный материал. Эти брюки дарят ощущение абсолютной свободы движения и легкой прохлады даже в самый жаркий летний день.'
+            },
+            'pants2': {
+                name: 'Брючки Сучки',
+                price: 18500,
+                img: 'tovarTrou4.jpeg',
+                tag: 'Пиздатые',
+                desc: 'Уникальный силуэт, подчеркивающий вашу индивидуальность. Изысканная деталь гардероба для тех, кто ценит смелый дизайн и безупречное исполнение.'
+            },
+            'pants3': {
+                name: 'Брючки',
+                price: 12000,
+                img: 'tovarTrou3.jpg',
+                tag: 'Топленое молоко',
+                desc: 'Мягкий базовый оттенок топленого молока. Универсальный крой прекрасно сочетается с легкими летними рубашками и расслабленными топами.'
+            }
+        };
+
+        let cart = JSON.parse(localStorage.getItem('vergen_cart')) || [];
+        let currentUser = localStorage.getItem('vergen_current_user') || null;
+        let isCheckoutPending = false; 
+
+        if (!localStorage.getItem('vergen_users')) {
+            localStorage.setItem('vergen_users', JSON.stringify([]));
+        }
+
+        // ===== АНИМАЦИЯ ИНТРО =====
+        window.addEventListener('DOMContentLoaded', () => {
+            const text = "VERGEN";
+            const element = document.getElementById('logo-wrap');
+            element.textContent = ""; 
+            let index = 0;
+
+            function typeWriter() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(typeWriter, 140);
+                } else {
+                    setTimeout(() => {
+                        element.style.borderRightColor = 'transparent';
+                        const introScreen = document.getElementById('intro-screen');
+                        introScreen.style.opacity = '0';
+                        introScreen.style.visibility = 'hidden';
+                    }, 800);
+                }
+            }
+
+            setTimeout(typeWriter, 500);
+
+            updateCart();
+            checkAuthState();
+        });
+
+        // Появление блоков
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.fade-in-section').forEach(section => observer.observe(section));
+
+        // ===== АВТОРИЗАЦИЯ И ЛИЧНЫЙ КАБИНЕТ =====
+        function checkAuthState() {
+            const btnText = document.getElementById('profile-btn-text');
+            if (currentUser) {
+                btnText.innerText = 'Кабинет';
+                document.getElementById('profile-email').innerText = currentUser;
+                renderOrderHistory();
+            } else {
+                btnText.innerText = 'Войти';
+            }
+        }
+
+        function handleProfileClick() {
+            if (currentUser) {
+                toggleProfileDrawer();
+            } else {
+                openAuthModal(false);
+            }
+        }
+
+        // Навешиваем слушатели событий на оверлеи для закрытия драуэров при клике вне их
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileOverlay = document.getElementById('profile-overlay');
+            if (profileOverlay) {
+                profileOverlay.addEventListener('click', toggleProfileDrawer);
+            }
+            const cartOverlay = document.getElementById('cart-overlay');
+            if (cartOverlay) {
+                cartOverlay.addEventListener('click', toggleCartDrawer);
+            }
+        });
+
+        function toggleProfileDrawer() {
+            const drawer = document.getElementById('profile-drawer');
+            const overlay = document.getElementById('profile-overlay');
+            
+            const cartDrawer = document.getElementById('cart-drawer');
+            const cartOverlay = document.getElementById('cart-overlay');
+            if (!cartDrawer.classList.contains('translate-x-full')) {
+                cartDrawer.classList.add('translate-x-full');
+                cartOverlay.classList.remove('opacity-100');
+                cartOverlay.classList.add('hidden');
+            }
+
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 500);
+            }
+        }
+
+        function openAuthModal(pendingCheckout = false) {
+            isCheckoutPending = pendingCheckout;
+            const msg = document.getElementById('auth-prompt-msg');
+            
+            if (pendingCheckout) {
+                msg.innerHTML = "Для завершения заказа, войдите или зарегистрируйтесь. <br><strong>Корзина сохранится!</strong>";
+                msg.className = "text-xs text-navy font-medium mb-2 leading-relaxed";
+            } else {
+                msg.innerText = "Войдите в личный кабинет, чтобы отслеживать историю заказов.";
+                msg.className = "text-xs text-charcoal/50 font-light mb-2 leading-relaxed";
+            }
+
+            const modal = document.getElementById('auth-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('opacity-100'), 10);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+            
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-pass').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('register-error').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                tabLogin.className = "flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-charcoal font-medium text-charcoal";
+                tabRegister.className = "flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-transparent text-charcoal/40 hover:text-charcoal transition-colors";
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+            } else {
+                tabRegister.className = "flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-charcoal font-medium text-charcoal";
+                tabLogin.className = "flex-1 pb-3 text-sm uppercase tracking-[0.15em] border-b-2 border-transparent text-charcoal/40 hover:text-charcoal transition-colors";
+                formRegister.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+            }
+        }
+
+        // Обновленная функция входа с защитой от перезагрузки страницы
+        function handleLoginSubmit(event) {
+            if (event) event.preventDefault(); // Запрещаем перезагрузку страницы!
+
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            if (!email || !pass) {
+                errorDiv.innerText = "Пожалуйста, заполните все поля.";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('vergen_users')) || [];
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === pass);
+
+            if (user) {
+                currentUser = user.email;
+                localStorage.setItem('vergen_current_user', currentUser);
+                closeAuthModal();
+                checkAuthState();
+                showToast("Вы успешно вошли!");
+
+                if (isCheckoutPending) {
+                    isCheckoutPending = false;
+                    const cartDrawer = document.getElementById('cart-drawer');
+                    if (cartDrawer.classList.contains('translate-x-full')) {
+                        toggleCartDrawer();
+                    }
+                    showOrderForm();
+                }
+            } else {
+                errorDiv.innerText = "Неверная почта или пароль.";
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('vergen_current_user');
+            toggleProfileDrawer();
+            checkAuthState();
+            showToast("Вы вышли из системы.");
+            
+            document.getElementById('checkout-btn').style.display = 'block';
+            document.getElementById('order-form-container').classList.add('hidden');
+        }
+
+        function renderOrderHistory() {
+            const list = document.getElementById('profile-orders-list');
+            if (!currentUser) return;
+
+            const users = JSON.parse(localStorage.getItem('vergen_users')) || [];
+            const user = users.find(u => u.email === currentUser);
+
+            if (!user || !user.orders || user.orders.length === 0) {
+                list.innerHTML = '<p class="text-center text-charcoal/40 font-light italic mt-12 text-sm">История заказов пуста.</p>';
+                return;
+            }
+
+            list.innerHTML = '';
+            user.orders.forEach(order => {
+                let itemsHtml = '';
+                order.items.forEach(it => {
+                    itemsHtml += `<div class="text-[11px] text-charcoal/60 font-light">• ${it.name} ${it.tag ? `(${it.tag})` : ''} — Размер: ${it.size} x ${it.qty} шт.</div>`;
+                });
+
+                list.innerHTML += `
+                    <div class="border border-sand p-4 bg-beige/35 space-y-2 rounded-none">
+                        <div class="flex justify-between items-center border-b border-sand pb-2">
+                            <span class="font-serif text-sm font-medium text-navy">Заказ #${order.id}</span>
+                            <span class="text-[10px] text-charcoal/40">${order.date}</span>
+                        </div>
+                        <div class="space-y-1">
+                            ${itemsHtml}
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-sand/40 text-xs font-light text-charcoal">
+                            <span>Итого:</span>
+                            <span class="font-medium text-charcoal">${order.total.toLocaleString()} ₽</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ===== КОРЗИНА И ВЫБОР РАЗМЕРА =====
+        let activeProductKey = null;
+
+        function openSizeSelector(productKey) {
+            activeProductKey = productKey;
+            const product = products[productKey];
+            document.getElementById('size-product-name').innerText = `${product.name} (${product.tag})`;
+            
+            const modal = document.getElementById('size-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('opacity-100'), 10);
+        }
+
+        function closeSizeModal() {
+            const modal = document.getElementById('size-modal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function selectSizeAndAdd(size) {
+            const product = products[activeProductKey];
+            addToCart(product.name, product.price, product.img, size, product.tag);
+            closeSizeModal();
+        }
+
+        function addToCart(name, price, img, size, tag) {
+            const existing = cart.find(item => item.name === name && item.size === size);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ name, price, img, size, tag, qty: 1 });
+            }
+            localStorage.setItem('vergen_cart', JSON.stringify(cart));
+            updateCart();
+            showToast(`Добавлено (Размер: ${size})`);
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            const total = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-charcoal/40 font-light italic mt-12 text-sm">Корзина пуста</p>';
+                count.innerText = '0';
+                total.innerText = '0 ₽';
+                document.getElementById('checkout-btn').style.display = 'none';
+                document.getElementById('order-form-container').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('checkout-btn').style.display = 'block';
+            let totalSum = 0, totalCount = 0;
+            container.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                totalSum += item.price * item.qty;
+                totalCount += item.qty;
+                container.innerHTML += `
+                    <div class="flex items-center justify-between border-b border-sand/40 pb-4">
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.img}" class="w-16 h-20 object-cover bg-sand" alt="${item.name}" loading="lazy">
+                            <div>
+                                <h4 class="font-serif text-base text-charcoal">${item.name}</h4>
+                                <p class="text-[11px] text-charcoal/40 mt-0.5">Размер: ${item.size} | ${item.tag}</p>
+                                <p class="text-xs text-charcoal font-medium mt-1">${item.price.toLocaleString()} ₽</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2">
+                            <button onclick="removeFromCart(${index})" class="text-charcoal/30 hover:text-navy p-1 transition-colors">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                            <div class="flex items-center space-x-2 border border-sand bg-milk px-1.5 py-0.5 select-none">
+                                <button onclick="changeQty(${index}, -1)" class="w-5 h-5 flex items-center justify-center hover:text-navy font-light text-base transition-colors">-</button>
+                                <span class="w-5 text-center text-xs font-light text-charcoal">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="w-5 h-5 flex items-center justify-center hover:text-navy font-light text-base transition-colors">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            count.innerText = totalCount;
+            total.innerText = totalSum.toLocaleString() + ' ₽';
+
+            // Автоматически заполняем скрытые инпуты для бэкенда!
+            document.getElementById('order-item').value = cart.map(it => `${it.name} (${it.size}) x${it.qty}`).join(', ');
+            document.getElementById('order-price').value = totalSum;
+        }
+
+        function changeQty(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('vergen_cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function removeFromCart(index) { 
+            cart.splice(index, 1); 
+            localStorage.setItem('vergen_cart', JSON.stringify(cart));
+            updateCart(); 
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            
+            const profileDrawer = document.getElementById('profile-drawer');
+            const profileOverlay = document.getElementById('profile-overlay');
+            if (!profileDrawer.classList.contains('translate-x-full')) {
+                profileDrawer.classList.add('translate-x-full');
+                profileOverlay.classList.remove('opacity-100');
+                profileOverlay.classList.add('hidden');
+            }
+
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 500);
+            }
+        }
+
+        function showOrderForm() {
+            if (!currentUser) {
+                openAuthModal(true); 
+                return;
+            }
+            document.getElementById('checkout-btn').style.display = 'none';
+            document.getElementById('order-form-container').classList.remove('hidden');
+            
+            // Если залогинен — сразу вставляем email в форму
+            document.getElementById('order-email').value = currentUser;
+        }
+
+        // ===== TOAST =====
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // ===== БЫСТРЫЙ ПРОСМОТР ТОВАРА =====
+        function openProductPreview(productKey) {
+            const product = products[productKey];
+            document.getElementById('modal-product-img').src = product.img;
+            document.getElementById('modal-product-tag').innerText = product.tag;
+            document.getElementById('modal-product-name').innerText = product.name;
+            document.getElementById('modal-product-desc').innerText = product.desc;
+            document.getElementById('modal-product-price').innerText = product.price.toLocaleString() + ' ₽';
+            
+            document.getElementById('modal-add-btn').onclick = () => {
+                closeProductModal();
+                openSizeSelector(productKey);
+            };
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('opacity-100'), 10);
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // =========================================================
+        // ===== ФУНКЦИИ СВЯЗИ С PYTHON-СЕРВЕРОМ (ИСПРАВЛЕННЫЕ) =====
+        // =========================================================
+
+        // 1. Функция регистрации пользователя
+        async function registerUser(event) {
+            if (event) event.preventDefault(); // Запрещаем перезагрузку страницы!
+
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-pass').value;
+
+            if (!name || !email || !password) {
+                alert("Заполните все поля регистрации!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SERVER_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: name, email: email, password: password })
+                });
+                const result = await response.json();
+                alert(result.message);
+
+                if (response.ok) {
+                    // Сохраняем пользователя в локальную сессию
+                    const users = JSON.parse(localStorage.getItem('vergen_users')) || [];
+                    if (!users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                        users.push({ email, password, username: name, orders: [] });
+                        localStorage.setItem('vergen_users', JSON.stringify(users));
+                    }
+                    currentUser = email;
+                    localStorage.setItem('vergen_current_user', currentUser);
+                    
+                    closeAuthModal();
+                    checkAuthState();
+                    showToast("Успешный вход!");
+
+                    if (isCheckoutPending) {
+                        isCheckoutPending = false;
+                        const cartDrawer = document.getElementById('cart-drawer');
+                        if (cartDrawer.classList.contains('translate-x-full')) {
+                            toggleCartDrawer();
+                        }
+                        showOrderForm();
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Ошибка подключения к серверу!");
+            }
+        }
+
+        // 2. Функция оформления заказа
+        async function makeOrder(event) {
+            if (event) event.preventDefault(); // Запрещаем перезагрузку страницы!
+
+            const email = document.getElementById('order-email').value.trim();
+            const item = document.getElementById('order-item').value;
+            const price = document.getElementById('order-price').value;
+
+            if (!email || !item || !price) {
+                alert("Заполните данные заказа!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SERVER_URL}/order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, item: item, price: price })
+                });
+                const result = await response.json();
+                alert(result.message);
+
+                if (response.ok) {
+                    // Сохраняем локально в историю заказов пользователя для отображения в ЛК
+                    if (currentUser) {
+                        const users = JSON.parse(localStorage.getItem('vergen_users')) || [];
+                        const userIndex = users.findIndex(u => u.email.toLowerCase() === currentUser.toLowerCase());
+                        if (userIndex !== -1) {
+                            const newOrder = {
+                                id: Math.floor(100000 + Math.random() * 900000),
+                                date: new Date().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                                items: JSON.parse(JSON.stringify(cart)),
+                                total: parseFloat(price)
+                            };
+                            if (!users[userIndex].orders) users[userIndex].orders = [];
+                            users[userIndex].orders.unshift(newOrder);
+                            localStorage.setItem('vergen_users', JSON.stringify(users));
+                            renderOrderHistory();
+                        }
+                    }
+
+                    // Перенаправление в Telegram для ручного подтверждения
+                    let text = `Новый заказ Vergen:\n\n• ${item}\n\nКонтакты: ${email}\nИтого: ${price} ₽`;
+                    window.open(`https://t.me/${TELEGRAM_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
+
+                    // Сброс корзины
+                    cart = [];
+                    localStorage.setItem('vergen_cart', JSON.stringify(cart));
+                    updateCart();
+                    toggleCartDrawer();
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Ошибка подключения к серверу!");
+            }
+        }
+    </script>
+</body>
+</html>
