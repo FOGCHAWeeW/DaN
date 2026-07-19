@@ -145,6 +145,22 @@
         <p class="text-charcoal/60 font-light text-base md:text-xl leading-relaxed italic">«Vergen»</p>
     </section>
 
+    <section id="pants-preview" class="py-16 md:py-24 px-6 md:px-16 bg-beige fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="relative group overflow-hidden bg-[#D3CFC9] h-[500px] md:h-[650px] flex items-center justify-center">
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 filter brightness-95" style="background-image: url('trousersPhotoSessa5.jpg');"></div>
+                <div class="absolute inset-0 bg-charcoal/5"></div>
+                <div class="absolute bottom-8 left-8 right-8 bg-milk/90 backdrop-blur-sm p-6 border border-sand">
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 mb-1">Капсула: В процессе</p>
+                    <p class="font-serif text-lg text-charcoal">Фотосессия коллекции проходит на острове Искья, Италия.</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <p class="font-serif text-sm tracking-[0.15em] text-navy/70 uppercase">Коллекция «Первый свет»</p>
+            </div>
+        </div>
+    </section>
+
     <section id="catalog" class="py-16 md:py-24 px-6 md:px-16 bg-beige fade-in-section">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12 md:mb-20">
@@ -167,7 +183,6 @@
                             <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брюки</h4>
                             <p class="text-charcoal/50 text-[11px] mt-1">Лагуна</p>
                         </div>
-                        <p class="font-medium text-navy text-sm mt-3">14 500 ₽</p>
                     </div>
                 </div>
 
@@ -184,7 +199,6 @@
                             <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брючки Сучки</h4>
                             <p class="text-charcoal/50 text-[11px] mt-1">Пиздатые</p>
                         </div>
-                        <p class="font-medium text-navy text-sm mt-3">18 500 ₽</p>
                     </div>
                 </div>
 
@@ -201,7 +215,6 @@
                             <h4 class="font-serif text-lg text-charcoal group-hover:text-navy transition-colors">Брючки</h4>
                             <p class="text-charcoal/50 text-[11px] mt-1">Топленое молоко</p>
                         </div>
-                        <p class="font-medium text-navy text-sm mt-3">12 000 ₽</p>
                     </div>
                 </div>
             </div>
@@ -464,13 +477,17 @@
         function showLoader() {
             const loader = document.getElementById('global-loader');
             loader.classList.remove('hidden');
+            loader.classList.add('flex');
             setTimeout(() => loader.classList.add('opacity-100'), 10);
         }
 
         function hideLoader() {
             const loader = document.getElementById('global-loader');
             loader.classList.remove('opacity-100');
-            setTimeout(() => loader.classList.add('hidden'), 300);
+            setTimeout(() => {
+                loader.classList.remove('flex');
+                loader.classList.add('hidden');
+            }, 300);
         }
 
         function showCustomAlert(title, message, isError = false) {
@@ -490,6 +507,7 @@
             }
 
             alertModal.classList.remove('hidden');
+            alertModal.classList.add('flex');
             setTimeout(() => {
                 alertModal.classList.add('opacity-100');
                 alertBox.classList.remove('scale-95');
@@ -503,7 +521,10 @@
             alertModal.classList.remove('opacity-100');
             alertBox.classList.remove('scale-100');
             alertBox.classList.add('scale-95');
-            setTimeout(() => alertModal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                alertModal.classList.remove('flex');
+                alertModal.classList.add('hidden');
+            }, 300);
         }
 
         // АВТОРИЗАЦИЯ
